@@ -13,7 +13,7 @@ public class DataSourceConfig {
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
 
-        dataSource.setUrl("jdbc:oracle:thin:@localhost:1521:ORC");
+        dataSource.setUrl("jdbc:oracle:thin:@localhost:1521:ORCL");
         dataSource.setUsername("PruebaAuditoria");
         dataSource.setPassword("password1");
 
