@@ -3,6 +3,7 @@ package com.example.pruebaauditoriaservice.Service;
 import com.example.pruebaauditoriaservice.JPA.Result;
 import com.example.pruebaauditoriaservice.JPA.UsuarioJPA;
 import com.example.pruebaauditoriaservice.Repository.IUsuarioRepository;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,22 @@ public class UsuarioService {
         try {
             result.objects = (List<Object>) (List<?>) iUsuarioRepository.findAll();
             result.correct = true;
+        } catch (Exception ex) {
+            result.correct = false;
+            result.errorMessage = ex.getMessage();
+        }
+        return result;
+    }
+
+    public Result agregarUsuario(UsuarioJPA usuario) {
+        Result result = new Result();
+        try {
+            usuario.setFechaRegistro(LocalDateTime.now());
+            usuario.setActivo(1);
+            
+            iUsuarioRepository.save(usuario);
+            result.correct = true;
+            result.object = usuario;
         } catch (Exception ex) {
             result.correct = false;
             result.errorMessage = ex.getMessage();
