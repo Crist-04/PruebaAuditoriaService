@@ -33,7 +33,43 @@ public class UsuarioService {
         try {
             usuario.setFechaRegistro(LocalDateTime.now());
             usuario.setActivo(1);
-            
+
+            iUsuarioRepository.save(usuario);
+            result.correct = true;
+            result.object = usuario;
+        } catch (Exception ex) {
+            result.correct = false;
+            result.errorMessage = ex.getMessage();
+        }
+        return result;
+    }
+
+    public Result actualizarUsuario(int idUsuario, UsuarioJPA usuarioActualizado) {
+        Result result = new Result();
+        try {
+            UsuarioJPA usuario = iUsuarioRepository.findById(idUsuario).orElse(null);
+            if (usuario == null) {
+                result.correct = false;
+                result.errorMessage = "USsuario no encontrado";
+                return result;
+            }
+            if (usuarioActualizado.getNombre() != null) {
+                usuario.setNombre(usuarioActualizado.getNombre());
+            }
+
+            if (usuarioActualizado.getCorreo() != null) {
+                usuario.setCorreo(usuarioActualizado.getCorreo());
+            }
+
+            usuario.setActivo(usuarioActualizado.getActivo());
+
+            if (usuario.getRol() != null) {
+                usuario.setRol(usuarioActualizado.getRol());
+            }
+
+            if (usuarioActualizado.getPassword() != null) {
+                usuario.setPassword(usuarioActualizado.getPassword());
+            }
             iUsuarioRepository.save(usuario);
             result.correct = true;
             result.object = usuario;
