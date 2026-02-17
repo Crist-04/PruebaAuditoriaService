@@ -7,6 +7,10 @@ import com.example.pruebaauditoriaservice.JPA.UsuarioJPA;
 import com.example.pruebaauditoriaservice.Repository.IEventoAuditoriaRepository;
 import com.example.pruebaauditoriaservice.Repository.ITipoEventoRepository;
 import com.example.pruebaauditoriaservice.Repository.IUsuarioRepository;
+import com.opencsv.CSVWriter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStreamWriter;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -144,6 +148,35 @@ public class UsuarioService {
 
         iEventoAuditoriaRepository.save(eventoAuditoria);
 
+    }
+
+    public ByteArrayInputStream exportarUsuariosCSV() {
+        List<UsuarioJPA> usuarios = iUsuarioRepository.findAll();
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream(); CSVWriter writer = new CSVWriter(new OutputStreamWriter(out))) {
+
+            String[] header = {
+                "ID", "Nombre", "Correo", "Activo", "Rol", "FechaRegistro"
+            };
+            writer.writeNext(header);
+
+            for (UsuarioJPA usuario : usuarios) {
+                String[] data = {
+                    String.valueOf(usuario.getIdUsuario()),
+                    usuario.getNombre(),
+                    usuario.getCorreo(),
+                    String.valueOf(usuario.getActivo()),
+                    usuario.getRol().getNombreRol(),
+                    String.valueOf(usuario.getFechaRegistro())
+                };
+                writer.writeNext(data);
+            }
+
+            writer.flush();
+            return new ByteArrayInputStream(out.toByteArray());
+
+        } catch (Exception ex) {
+            throw new RuntimeException("Error al exportar el csv");
+        }
     }
 
 }
