@@ -10,6 +10,9 @@ import com.example.pruebaauditoriaservice.Repository.IUsuarioRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,11 +33,14 @@ public class UsuarioService {
         this.iEventoAuditoriaRepository = iEventoAuditoriaRepository;
     }
 
-    public Result listaUsuarios() {
+    public Result listaUsuarios(int activo, int idRol, int page, int size) {
         Result result = new Result();
         try {
-            result.objects = (List<Object>) (List<?>) iUsuarioRepository.findAll();
+            Pageable pageable = PageRequest.of(page, size);
+            Page<UsuarioJPA> usuarios = iUsuarioRepository.findByActivoAndRolIdRol(activo, idRol, pageable);
             result.correct = true;
+            result.objects = (List<Object>) (List<?>) usuarios.getContent();
+            result.object = usuarios.getTotalElements();
         } catch (Exception ex) {
             result.correct = false;
             result.errorMessage = ex.getMessage();
