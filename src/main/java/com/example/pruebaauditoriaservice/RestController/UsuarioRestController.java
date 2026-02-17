@@ -5,6 +5,7 @@ import com.example.pruebaauditoriaservice.JPA.UsuarioJPA;
 import com.example.pruebaauditoriaservice.Service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,6 +38,12 @@ public class UsuarioRestController {
         Result result = usuarioService.actualizarUsuario(idUsuario, usuario);
         return ResponseEntity.ok(result);
 
+    }
+
+    @DeleteMapping("/eliminarusuario/{idUsuario}")
+    public ResponseEntity<Result> eliminarUsuario(@PathVariable int idUsuario) {
+        Result result = usuarioService.elimimarUsuario(idUsuario);
+        return ResponseEntity.ok(result);
     }
 
 }

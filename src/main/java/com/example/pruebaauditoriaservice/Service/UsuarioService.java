@@ -80,4 +80,32 @@ public class UsuarioService {
         return result;
     }
 
+    public Result elimimarUsuario(int idUsuario) {
+        Result result = new Result();
+        try {
+            UsuarioJPA usuario = iUsuarioRepository.findById(idUsuario).orElse(null);
+
+            if (usuario == null) {
+                result.correct = false;
+                result.errorMessage = "Usuario no encontrado";
+                return result;
+            }
+
+            usuario.setActivo(0);
+            iUsuarioRepository.save(usuario);
+
+            result.correct = true;
+            result.errorMessage = "Usuario Eliminado";
+            result.status = 200;
+            result.object = usuario;
+
+        } catch (Exception ex) {
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.status = 500;
+            return result;
+        }
+        return result;
+    }
+
 }
