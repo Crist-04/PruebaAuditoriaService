@@ -7,6 +7,11 @@ import com.example.pruebaauditoriaservice.JPA.UsuarioJPA;
 import com.example.pruebaauditoriaservice.Repository.IEventoAuditoriaRepository;
 import com.example.pruebaauditoriaservice.Repository.ITipoEventoRepository;
 import com.example.pruebaauditoriaservice.Repository.IUsuarioRepository;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
 import com.opencsv.CSVWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -176,6 +181,47 @@ public class UsuarioService {
 
         } catch (Exception ex) {
             throw new RuntimeException("Error al exportar el csv");
+        }
+    }
+
+    public ByteArrayInputStream exportarUsuarioPDF() {
+        List<UsuarioJPA> usuarios = iUsuarioRepository.findAll();
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+            PdfWriter writer = new PdfWriter(out);
+            PdfDocument pdfDoc = new PdfDocument(writer);
+            Document document = new Document(pdfDoc);
+
+            document.add(new Paragraph("Reporte Usuarios")
+                    .setBold()
+                    .setFontSize(18)
+            );
+
+            Table table = new Table(6);
+            table.addHeaderCell("ID");
+            table.addHeaderCell("Nombre");
+            table.addHeaderCell("Correo");
+            table.addHeaderCell("Activo");
+            table.addHeaderCell("Rol");
+            table.addHeaderCell("Fecha Registro");
+
+            for (UsuarioJPA usuario : usuarios) {
+                table.addCell(String.valueOf(usuario.getIdUsuario()));
+                table.addCell(usuario.getNombre());
+                table.addCell(usuario.getCorreo());
+                table.addCell(String.valueOf(usuario.getActivo()));
+                table.addCell(usuario.getRol().getNombreRol());
+                table.addCell(String.valueOf(usuario.getFechaRegistro()));
+            }
+
+            document.add(table);
+            document.close();;
+
+            return new ByteArrayInputStream(out.toByteArray());
+
+        } catch (Exception ex) {
+            throw new RuntimeException("Error al exportar el pdf");
         }
     }
 

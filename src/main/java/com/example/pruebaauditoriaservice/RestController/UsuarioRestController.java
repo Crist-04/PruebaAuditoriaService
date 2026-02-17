@@ -22,45 +22,54 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioRestController {
-    
+
     @Autowired
     private UsuarioService usuarioService;
-    
+
     @GetMapping
     public ResponseEntity<Result> listaUsuarios(@RequestParam int activo, @RequestParam int idRol, @RequestParam int page, @RequestParam int size) {
         return ResponseEntity.ok(usuarioService.listaUsuarios(activo, idRol, page, size));
     }
-    
+
     @PostMapping("/agregarusuario")
     public ResponseEntity<Result> agregarUsuario(@RequestBody UsuarioJPA usuario) {
         Result result = usuarioService.agregarUsuario(usuario);
         return ResponseEntity.ok(result);
     }
-    
+
     @PutMapping("/actualizarusuario/{idUsuario}")
     public ResponseEntity<Result> actualizarUsuario(@PathVariable int idUsuario, @RequestBody UsuarioJPA usuario) {
         Result result = usuarioService.actualizarUsuario(idUsuario, usuario);
         return ResponseEntity.ok(result);
-        
+
     }
-    
+
     @DeleteMapping("/eliminarusuario/{idUsuario}")
     public ResponseEntity<Result> eliminarUsuario(@PathVariable int idUsuario) {
         Result result = usuarioService.elimimarUsuario(idUsuario);
         return ResponseEntity.ok(result);
     }
-    
+
     @GetMapping("/exportar/csv")
     public ResponseEntity<InputStreamResource> exportarCSV() {
         ByteArrayInputStream csv = usuarioService.exportarUsuariosCSV();
-        
+
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", "attachment; filename=usuarios.csv");
-        
+
         return ResponseEntity.ok()
                 .headers(headers)
                 .contentType(MediaType.parseMediaType("text/csv"))
                 .body(new InputStreamResource(csv));
     }
-    
+
+    @GetMapping("/exportar/pdf")
+    public ResponseEntity<InputStreamResource> exportarPDF() {
+        ByteArrayInputStream pdf = usuarioService.exportarUsuarioPDF();
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=usuarios.pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(new InputStreamResource(pdf));
+    }
+
 }
