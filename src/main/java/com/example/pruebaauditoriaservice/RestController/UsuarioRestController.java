@@ -1,12 +1,16 @@
 package com.example.pruebaauditoriaservice.RestController;
 
+import com.example.pruebaauditoriaservice.DTO.LoginRequest;
 import com.example.pruebaauditoriaservice.JPA.Result;
 import com.example.pruebaauditoriaservice.JPA.UsuarioJPA;
+import com.example.pruebaauditoriaservice.Repository.IUsuarioRepository;
 import com.example.pruebaauditoriaservice.Service.UsuarioService;
+import com.example.pruebaauditoriaservice.Util.JwtUtil;
 import java.io.ByteArrayInputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,6 +29,24 @@ public class UsuarioRestController {
 
     @Autowired
     private UsuarioService usuarioService;
+
+    @Autowired
+    private IUsuarioRepository iUsuarioRepository;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        UsuarioJPA usuario = iUsuarioRepository.findByCorreo(loginRequest.getCorreo());
+
+        if (usuario == null || !usuario.getPassword().equals(loginRequest.getPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Credenciales invalidas");
+        }
+        String token = jwtUtil.generateToken(usuario.getCorreo(), usuario.getRol().getNombreRol());
+        return ResponseEntity.ok(token);
+    }
 
     @GetMapping
     public ResponseEntity<Result> listaUsuarios(@RequestParam int activo, @RequestParam int idRol, @RequestParam int page, @RequestParam int size) {
