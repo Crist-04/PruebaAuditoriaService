@@ -31,7 +31,7 @@ public class EventoAuditoriaJPA {
     private LocalDateTime tiempoEvento;
 
     @Column(name = "descripcion")
-    private String Descripcion;
+    private String descripcion;
 
     public int getIdEventoAuditoria() {
         return idEventoAuditoria;
@@ -66,11 +66,11 @@ public class EventoAuditoriaJPA {
     }
 
     public String getDescripcion() {
-        return Descripcion;
+        return descripcion;
     }
 
-    public void setDescripcion(String Descripcion) {
-        this.Descripcion = Descripcion;
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
 }
