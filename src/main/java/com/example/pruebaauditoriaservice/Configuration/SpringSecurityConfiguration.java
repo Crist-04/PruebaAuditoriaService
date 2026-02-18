@@ -22,8 +22,8 @@ public class SpringSecurityConfiguration {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/usuarios/login").permitAll()
-                .requestMatchers("/usuarios/exportar/**").hasRole("ADMIN")
-                .requestMatchers("/auditoria/**").hasRole("ADMIN")
+                .requestMatchers("/usuarios/exportar/**").hasRole("Administrador")
+                .requestMatchers("/auditoria/**").hasRole("Administrador")
                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
