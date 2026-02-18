@@ -165,11 +165,14 @@ public class UsuarioService {
             writer.writeNext(header);
 
             for (UsuarioJPA usuario : usuarios) {
+
+                String estado = (usuario.getActivo() == 1) ? "Activo" : "Desactivado";
+
                 String[] data = {
                     String.valueOf(usuario.getIdUsuario()),
                     usuario.getNombre(),
                     usuario.getCorreo(),
-                    String.valueOf(usuario.getActivo()),
+                    estado,
                     usuario.getRol().getNombreRol(),
                     String.valueOf(usuario.getFechaRegistro())
                 };
@@ -210,7 +213,8 @@ public class UsuarioService {
                 table.addCell(String.valueOf(usuario.getIdUsuario()));
                 table.addCell(usuario.getNombre());
                 table.addCell(usuario.getCorreo());
-                table.addCell(String.valueOf(usuario.getActivo()));
+                String estado = (usuario.getActivo() == 1) ? "Activo" : "Desactivado";
+                table.addCell(estado);
                 table.addCell(usuario.getRol().getNombreRol());
                 table.addCell(String.valueOf(usuario.getFechaRegistro()));
             }
