@@ -160,22 +160,26 @@ public class UsuarioService {
         try (ByteArrayOutputStream out = new ByteArrayOutputStream(); CSVWriter writer = new CSVWriter(new OutputStreamWriter(out))) {
 
             String[] header = {
-                "ID", "Nombre", "Correo", "Activo", "Rol", "FechaRegistro"
+                "ID", "Nombre", "Correo", "Activo", "Rol", "FechaRegistro", "Descripcion"
             };
             writer.writeNext(header);
 
             for (UsuarioJPA usuario : usuarios) {
 
                 String estado = (usuario.getActivo() == 1) ? "Activo" : "Desactivado";
+                EventoAuditoriaJPA ultimoEvento = iEventoAuditoriaRepository.findTopByUsuarioOrderByTiempoEventoDesc(usuario);
 
+                String descripcion = (ultimoEvento != null) ? ultimoEvento.getDescripcion() : "Sin eventos";
                 String[] data = {
                     String.valueOf(usuario.getIdUsuario()),
                     usuario.getNombre(),
                     usuario.getCorreo(),
                     estado,
                     usuario.getRol().getNombreRol(),
-                    String.valueOf(usuario.getFechaRegistro())
+                    String.valueOf(usuario.getFechaRegistro()),
+                    descripcion
                 };
+
                 writer.writeNext(data);
             }
 
@@ -201,22 +205,30 @@ public class UsuarioService {
                     .setFontSize(18)
             );
 
-            Table table = new Table(6);
+            Table table = new Table(7);
             table.addHeaderCell("ID");
             table.addHeaderCell("Nombre");
             table.addHeaderCell("Correo");
             table.addHeaderCell("Activo");
             table.addHeaderCell("Rol");
             table.addHeaderCell("Fecha Registro");
+            table.addHeaderCell("Descripcion");
 
             for (UsuarioJPA usuario : usuarios) {
+
+                String estado = (usuario.getActivo() == 1) ? "Activo" : "Desactivado";
+
+                EventoAuditoriaJPA ultimoEvento = iEventoAuditoriaRepository.findTopByUsuarioOrderByTiempoEventoDesc(usuario);
+
+                String descripcion = (ultimoEvento != null) ? ultimoEvento.getDescripcion() : "Sin eventos";
+
                 table.addCell(String.valueOf(usuario.getIdUsuario()));
                 table.addCell(usuario.getNombre());
                 table.addCell(usuario.getCorreo());
-                String estado = (usuario.getActivo() == 1) ? "Activo" : "Desactivado";
                 table.addCell(estado);
                 table.addCell(usuario.getRol().getNombreRol());
                 table.addCell(String.valueOf(usuario.getFechaRegistro()));
+                table.addCell(descripcion);
             }
 
             document.add(table);
