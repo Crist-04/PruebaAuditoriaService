@@ -7,6 +7,7 @@ import com.example.pruebaauditoriaservice.JPA.UsuarioJPA;
 import com.example.pruebaauditoriaservice.Repository.IEventoAuditoriaRepository;
 import com.example.pruebaauditoriaservice.Repository.ITipoEventoRepository;
 import com.example.pruebaauditoriaservice.Repository.IUsuarioRepository;
+import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
@@ -198,7 +199,7 @@ public class UsuarioService {
 
             PdfWriter writer = new PdfWriter(out);
             PdfDocument pdfDoc = new PdfDocument(writer);
-            Document document = new Document(pdfDoc);
+            Document document = new Document(pdfDoc, PageSize.LETTER.rotate());
 
             document.add(new Paragraph("Reporte Usuarios")
                     .setBold()
