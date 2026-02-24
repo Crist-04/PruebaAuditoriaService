@@ -7,10 +7,12 @@ import com.example.pruebaauditoriaservice.JPA.UsuarioJPA;
 import com.example.pruebaauditoriaservice.Repository.IEventoAuditoriaRepository;
 import com.example.pruebaauditoriaservice.Repository.ITipoEventoRepository;
 import com.example.pruebaauditoriaservice.Repository.IUsuarioRepository;
+import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.opencsv.CSVWriter;
@@ -207,6 +209,8 @@ public class UsuarioService {
             );
 
             Table table = new Table(7);
+            table.setBackgroundColor(ColorConstants.LIGHT_GRAY);
+            table.setBorder(new SolidBorder(ColorConstants.RED,2));
             table.addHeaderCell("ID");
             table.addHeaderCell("Nombre");
             table.addHeaderCell("Correo");
